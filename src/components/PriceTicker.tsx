@@ -22,7 +22,6 @@ export default function PriceTicker() {
     piece: 'পিস',
   };
 
-  // দুইবার repeat করি smooth infinite scroll এর জন্য
   const tickerItems = [...products, ...products];
 
   return (

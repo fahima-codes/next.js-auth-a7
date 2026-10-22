@@ -18,33 +18,50 @@ export default function SignInPage() {
     e.preventDefault();
     setLoading(true);
 
-    const { data, error } = await signIn.email({
-      email,
-      password,
-      callbackURL: callbackUrl,
-    });
+    try {
+      const { error } = await signIn.email({
+        email: email.trim(),
+        password,
+        callbackURL: callbackUrl,
+      });
 
-    if (error) {
-      toast.error(error.message || 'সাইন ইন ব্যর্থ হয়েছে!');
-      setLoading(false);
-    } else {
+      if (error) {
+        toast.error(error.message || 'সাইন ইন ব্যর্থ হয়েছে!');
+        return;
+      }
+
       toast.success('সাইন ইন সফল হয়েছে! 🎉');
       router.push(callbackUrl);
+    } catch (error) {
+      console.error('Signin error:', error);
+      toast.error('সার্ভারের সঙ্গে যোগাযোগ করা যায়নি। আবার চেষ্টা করুন।');
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleGoogleSignIn = async () => {
-    await signIn.social({
-      provider: 'google',
-      callbackURL: callbackUrl,
-    });
+    try {
+      await signIn.social({
+        provider: 'google',
+        callbackURL: callbackUrl,
+      });
+    } catch (error) {
+      console.error('Google signin error:', error);
+      toast.error('Google দিয়ে সাইন ইন করা যায়নি।');
+    }
   };
 
   const handleGitHubSignIn = async () => {
-    await signIn.social({
-      provider: 'github',
-      callbackURL: callbackUrl,
-    });
+    try {
+      await signIn.social({
+        provider: 'github',
+        callbackURL: callbackUrl,
+      });
+    } catch (error) {
+      console.error('GitHub signin error:', error);
+      toast.error('GitHub দিয়ে সাইন ইন করা যায়নি।');
+    }
   };
 
   return (
