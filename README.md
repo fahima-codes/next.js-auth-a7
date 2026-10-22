@@ -51,7 +51,7 @@ npm run dev
 
 ## 🌐 লাইভ অ্যাপ
 
-[বাজার দর দেখুন](your-deployment-url)
+[বাজার দর দেখুন](https://next-js-auth-a7.vercel.app/)
 
 ## 🔗 GitHub Repository
 
