@@ -9,6 +9,7 @@ if (!mongodbUrl) {
 }
 
 const client = new MongoClient(mongodbUrl);
+await client.connect();
 const db = client.db('Bajardor');
 
 export const auth = betterAuth({
@@ -24,6 +25,7 @@ export const auth = betterAuth({
   },
   trustedOrigins: [
     'https://next-js-auth-a7.vercel.app',
+    'https://next-js-auth-a7-kbt31mjx4-aa-53e9.vercel.app',
     'https://next-js-auth-a7-5fdo2v4at-aa-53e9.vercel.app',
     'http://localhost:3000',
   ],
