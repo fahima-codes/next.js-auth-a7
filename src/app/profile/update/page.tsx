@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useSession, authClient } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
@@ -8,41 +8,6 @@ import Link from 'next/link';
 
 export default function UpdateProfilePage() {
   const { data: session, isPending } = useSession();
-  const [name, setName] = useState('');
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
-
-  useEffect(() => {
-    if (session?.user?.name) {
-      setName(session.user.name);
-    }
-    // login na korle signin e pathao
-    if (!isPending && !session) {
-      router.push('/signin');
-    }
-  }, [session, isPending, router]);
-
-  const handleUpdate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (name.trim().length < 3) {
-      toast.error('নাম কমপক্ষে ৩ অক্ষরের হতে হবে');
-      return;
-    }
-    setLoading(true);
-
-    const { error } = await authClient.updateUser({
-      name: name.trim(),
-    });
-
-    if (error) {
-      toast.error(error.message || 'আপডেট ব্যর্থ হয়েছে!');
-      setLoading(false);
-    } else {
-      toast.success('প্রোফাইল সফলভাবে আপডেট হয়েছে! 🎉');
-      router.refresh(); // session update korar jonno important
-      router.push('/profile');
-    }
-  };
 
   if (isPending) {
     return (
@@ -51,6 +16,66 @@ export default function UpdateProfilePage() {
       </div>
     );
   }
+
+  if (!session) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center">
+        <p className="text-gray-500 mb-4">আপনি লগইন করেননি</p>
+        <Link href="/signin" className="btn btn-success text-white">
+          সাইন ইন করুন
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <ProfileUpdateForm
+      key={session.user.id}
+      initialName={session.user.name || ''}
+      email={session.user.email}
+    />
+  );
+}
+
+function ProfileUpdateForm({
+  initialName,
+  email,
+}: {
+  initialName: string;
+  email: string;
+}) {
+  const [name, setName] = useState(initialName);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (name.trim().length < 3) {
+      toast.error('নাম কমপক্ষে ৩ অক্ষরের হতে হবে');
+      return;
+    }
+    setLoading(true);
+
+    try {
+      const { error } = await authClient.updateUser({
+        name: name.trim(),
+      });
+
+      if (error) {
+        toast.error(error.message || 'আপডেট ব্যর্থ হয়েছে!');
+        return;
+      }
+
+      toast.success('প্রোফাইল সফলভাবে আপডেট হয়েছে! 🎉');
+      router.refresh();
+      router.push('/profile');
+    } catch (error) {
+      console.error('Profile update error:', error);
+      toast.error('সার্ভারের সঙ্গে যোগাযোগ করা যায়নি। আবার চেষ্টা করুন।');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="max-w-lg mx-auto px-4 py-8">
@@ -80,7 +105,7 @@ export default function UpdateProfilePage() {
               <input
                 type="email"
                 className="input input-bordered w-full bg-gray-100"
-                value={session?.user?.email || ''}
+                value={email}
                 disabled
               />
               <label className="label">

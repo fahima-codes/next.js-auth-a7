@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🛒 বাজার দর | BazarDor
 
-## Getting Started
+বাংলাদেশের নিত্যপ্রয়োজনীয় পণ্যের বাজারদর সহজে খুঁজে দেখার একটি বাংলা ওয়েব
+অ্যাপ।
 
-First, run the development server:
+## 📖 প্রজেক্ট পরিচিতি
+
+বাজার দর-এ চাল, ডাল, তেল, শাকসবজি, মাছ, মাংস, ডিম, দুধ ও মসলাসহ বিভিন্ন পণ্যের
+দাম দেখা যায়। পণ্যের বিভাগ ও বাজার অনুযায়ী দাম, সর্বনিম্ন-সর্বোচ্চ দর এবং দাম
+বাড়া-কমার তথ্য এক জায়গায় উপস্থাপন করাই এই অ্যাপের লক্ষ্য।
+
+## 🛠️ প্রযুক্তি
+
+| প্রযুক্তি          | কাজ                             |
+| ------------------ | ------------------------------- |
+| Next.js 16         | ওয়েব অ্যাপ ও পেজ তৈরি          |
+| Next.js App Router | রাউট ও পেজ নেভিগেশন             |
+| React              | ইন্টার‌্যাক্টিভ ইউজার ইন্টারফেস |
+| TypeScript         | টাইপসহ কোড লেখা                 |
+| Tailwind CSS v4    | ডিজাইন ও রেসপনসিভ স্টাইল        |
+| DaisyUI            | UI কম্পোনেন্ট                   |
+| Better Auth        | ব্যবহারকারীর সাইন আপ ও সাইন ইন  |
+| MongoDB            | ডেটা সংরক্ষণ                    |
+
+## ✨ উল্লেখযোগ্য ফিচার
+
+1. **📊 বাজারদরের ড্যাশবোর্ড** — দাম বেড়েছে বা কমেছে এমন পণ্যের তালিকা দেখুন।
+2. **🏪 বাজারভিত্তিক দর** — বিভিন্ন এলাকার বাজারের পণ্যমূল্য দেখুন।
+3. **🔐 অ্যাকাউন্ট ব্যবস্থাপনা** — ইমেইল দিয়ে সাইন আপ ও সাইন ইন করুন; Google ও
+   GitHub লগইনও ব্যবহার করা যায়।
+4. **📱 রেসপনসিভ ডিজাইন** — মোবাইল, ট্যাবলেট ও কম্পিউটারে ব্যবহার উপযোগী।
+5. **🔎 বিভাগ অনুযায়ী পণ্য খোঁজা** — ক্যাটাগরি ধরে পণ্য দেখুন এবং দামের
+   ভিত্তিতে সাজান।
+
+## 🚀 নিজের কম্পিউটারে চালান
+
+```bash
+git clone <your-repository-url>
+cd <project-folder>
+npm install
+```
+
+প্রজেক্টের auth ও database সেটআপ অনুযায়ী `.env.local` ফাইল তৈরি করে প্রয়োজনীয়
+environment variable যোগ করুন। এরপর চালান:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+ব্রাউজারে [http://localhost:3000](http://localhost:3000) খুলুন।
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🌐 লাইভ অ্যাপ
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+[বাজার দর দেখুন](your-deployment-url)
 
-## Learn More
+## 🔗 GitHub Repository
 
-To learn more about Next.js, take a look at the following resources:
+[বাজার দর-এর সোর্স কোড দেখুন](https://github.com/fahima-codes/next.js-auth-a7)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+© ২০২৬ BazarDor

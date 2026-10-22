@@ -12,7 +12,13 @@ export default function SignInPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/';
+  const requestedCallbackUrl = searchParams.get('callbackUrl');
+  const callbackUrl =
+    requestedCallbackUrl?.startsWith('/') &&
+    !requestedCallbackUrl.startsWith('//') &&
+    !requestedCallbackUrl.includes('\\')
+      ? requestedCallbackUrl
+      : '/';
 
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();

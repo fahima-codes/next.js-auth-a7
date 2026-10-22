@@ -13,7 +13,9 @@ async function getProduct(slug: string): Promise<Product | null> {
     'https://api.api-store.workers.dev/api/bazardor/products',
     { next: { revalidate: 60 } },
   );
-  if (!res.ok) return null;
+  if (!res.ok) {
+    throw new Error(`Product API request failed (${res.status})`);
+  }
   const products: Product[] = await res.json();
   return products.find(p => p.slug === slug) || null;
 }

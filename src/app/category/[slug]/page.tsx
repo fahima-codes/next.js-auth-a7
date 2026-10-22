@@ -11,54 +11,74 @@ export default function CategoryPage() {
   const params = useParams();
   const slug = params.slug as string;
 
-  const [products, setProducts] = useState<Product[]>([]);
-  const [category, setCategory] = useState<Category | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [result, setResult] = useState<{
+    slug: string;
+    products: Product[];
+    category: Category | null;
+    error: boolean;
+  } | null>(null);
   const [sortBy, setSortBy] = useState('default');
 
   useEffect(() => {
-    setLoading(true);
-    setError(false);
+    const controller = new AbortController();
 
-    Promise.all([
-      fetch(
-        `https://api.api-store.workers.dev/api/bazardor/products?category=${slug}`,
-      ).then(res => {
-        if (!res.ok) throw new Error('Products fetch failed');
-        return res.json();
-      }),
-      fetch(
-        `https://api.api-store.workers.dev/api/bazardor/categories/${slug}`,
-      ).then(res => {
-        if (!res.ok) throw new Error('Category fetch failed');
-        return res.json();
-      }),
-    ])
-      .then(([productsData, categoryData]) => {
-        if (!productsData || productsData.length === 0) {
-          setError(true);
-        } else {
-          setProducts(productsData);
-          setCategory(categoryData);
+    async function loadCategory() {
+      try {
+        const [productsResponse, categoryResponse] = await Promise.all([
+          fetch(
+            `https://api.api-store.workers.dev/api/bazardor/products?category=${encodeURIComponent(slug)}`,
+            { signal: controller.signal },
+          ),
+          fetch(
+            `https://api.api-store.workers.dev/api/bazardor/categories/${encodeURIComponent(slug)}`,
+            { signal: controller.signal },
+          ),
+        ]);
+
+        if (!productsResponse.ok || !categoryResponse.ok) {
+          throw new Error(
+            `Category API request failed (${productsResponse.status}, ${categoryResponse.status})`,
+          );
         }
-        setLoading(false);
-      })
-      .catch(() => {
-        setError(true);
-        setLoading(false);
-      });
+
+        const [productsData, categoryData] = await Promise.all([
+          productsResponse.json(),
+          categoryResponse.json(),
+        ]);
+
+        if (!Array.isArray(productsData) || productsData.length === 0) {
+          setResult({ slug, products: [], category: null, error: false });
+          return;
+        }
+
+        setResult({
+          slug,
+          products: productsData as Product[],
+          category: categoryData as Category,
+          error: false,
+        });
+      } catch (error) {
+        if (controller.signal.aborted) return;
+        console.error('Category fetch error:', error);
+        setResult({ slug, products: [], category: null, error: true });
+      }
+    }
+
+    void loadCategory();
+    return () => controller.abort();
   }, [slug]);
 
+  const currentResult = result?.slug === slug ? result : null;
+
   // Sort products — numeric value দিয়ে sort করবে, Bengali numeral নয়
-  const sortedProducts = [...products].sort((a, b) => {
+  const sortedProducts = [...(currentResult?.products ?? [])].sort((a, b) => {
     if (sortBy === 'price-asc') return a.today - b.today;
     if (sortBy === 'price-desc') return b.today - a.today;
     return 0; // default — API order
   });
 
   // Loading State — Skeleton
-  if (loading) {
+  if (!currentResult) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="skeleton h-8 w-48 mb-2"></div>
@@ -88,7 +108,7 @@ export default function CategoryPage() {
   }
 
   // Error / Empty State — 404 type
-  if (error || products.length === 0) {
+  if (currentResult.error || currentResult.products.length === 0) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
         <div className="text-6xl mb-4">😢</div>
@@ -111,11 +131,11 @@ export default function CategoryPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-            <span>{category?.icon}</span>
-            {category?.nameBn}
+            <span>{currentResult.category?.icon}</span>
+            {currentResult.category?.nameBn}
           </h1>
           <p className="text-gray-500 text-sm mt-1">
-            এই ক্যাটাগরিতে মোট {products.length}টি পণ্য
+            এই ক্যাটাগরিতে মোট {currentResult.products.length}টি পণ্য
           </p>
         </div>
         {/* Sort Dropdown (C1 Challenge) */}
